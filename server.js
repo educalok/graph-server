@@ -1,6 +1,11 @@
 const express = require('express');
 const {graphqlHTTP} = require('express-graphql');
+
 const schema = require('./graphql/schema');
+const {connectDB} = require('./db');
+
+//Se conecta a la base de datos
+connectDB();
 
 //Se crea el servidor
 const app = express();
