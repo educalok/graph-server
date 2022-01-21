@@ -9,7 +9,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      select: false,
+      select: false, //Propiead seteada en False que este campo no sea mostrado en una acción de Select
     },
     email: {
       type: String,
@@ -23,7 +23,7 @@ const userSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, //Propiedad que agrega dos columnas DateTime a la tabla automáticamente (createdAt y UpdatedAt)
     versionKey: false,
   }
 );
