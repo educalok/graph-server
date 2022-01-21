@@ -1,7 +1,8 @@
 const {GraphQLString, GraphQLID, GraphQLNonNull} = require('graphql');
 
 const {createJWTToken} = require('../util/auth');
-const {User} = require('../models');
+const {User, Post} = require('../models');
+const {PostType} = require('./types');
 
 const register = {
   type: GraphQLString,
@@ -49,4 +50,28 @@ const login = {
   },
 };
 
-module.exports = {register, login};
+const createPost = {
+  type: PostType,
+  description: 'create a new blog post',
+  args: {
+    title: {type: new GraphQLNonNull(GraphQLString)},
+    body: {type: new GraphQLNonNull(GraphQLString)},
+  },
+  /* async resolve(_, args, {verifiedUser}) { */
+  async resolve(_, args) {
+    /*    if (!verifiedUser) throw new Error('You must be logged in to do that');
+
+    const userFound = await User.findById(verifiedUser._id);
+    if (!userFound) throw new Error('Unauthorized'); */
+
+    const post = new Post({
+      authorId: '61ea0caa39f40dfe4b77d97a',
+      title: args.title,
+      body: args.body,
+    });
+
+    return post.save();
+  },
+};
+
+module.exports = {register, login, createPost};
