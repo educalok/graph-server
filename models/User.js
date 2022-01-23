@@ -25,7 +25,7 @@ const userSchema = new Schema(
   {
     timestamps: true, //Propiedad que agrega dos columnas DateTime a la tabla automáticamente (createdAt y UpdatedAt)
     versionKey: false,
-  }
+  },
 );
 
 module.exports = model('User', userSchema);

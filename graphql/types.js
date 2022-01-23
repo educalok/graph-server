@@ -1,8 +1,6 @@
-//Archivo en el que se pueden definir tipos de datos customs
-
 const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList} = require('graphql');
+const {Post, Comment, User} = require('../models');
 
-//Tipo de dato User, el mismo contará con los siguientes campos
 const UserType = new GraphQLObjectType({
   name: 'User',
   description: 'User type',
@@ -27,10 +25,38 @@ const PostType = new GraphQLObjectType({
         return User.findById(parent.authorId);
       },
     },
+    comments: {
+      type: new GraphQLList(CommentType),
+      resolve(parent) {
+        return Comment.find({postId: parent.id});
+      },
+    },
+  }),
+});
+
+const CommentType = new GraphQLObjectType({
+  name: 'Comment',
+  description: 'comments type',
+  fields: () => ({
+    id: {type: GraphQLID},
+    comment: {type: GraphQLString},
+    user: {
+      type: UserType,
+      resolve(parent) {
+        return User.findById(parent.userId);
+      },
+    },
+    post: {
+      type: PostType,
+      resolve(parent) {
+        return Post.findById(parent.postId);
+      },
+    },
   }),
 });
 
 module.exports = {
   UserType,
   PostType,
+  CommentType,
 };
