@@ -9,7 +9,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      select: false, //Propiead seteada en False que este campo no sea mostrado en una acción de Select
+      select: false, //Propiedad seteada en False que este campo no sea mostrado en una acción de Select
     },
     email: {
       type: String,

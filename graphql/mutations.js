@@ -90,7 +90,7 @@ const updatePost = {
       {_id: id, authorId: verifiedUser._id},
       {title, body},
       {
-        new: true,
+        new: true, //Esta propiedad se defne para que el select muestre el post actualizado en vez del viejo
         runValidators: true,
       },
     );
