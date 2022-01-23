@@ -9,7 +9,7 @@ const app = express();
 //Se define el middleware para ejecutarse en todos los requests
 app.use(authenticate);
 
-app.get('/', (req, res) => res.json({msg: 'Welcome. Go to /graphql'}));
+app.get('/', (req, res) => res.json({msg: `Welcome. Go to /graphql ${process.env.MONGODB_URI}`}));
 
 //Se define la única ruta que necesita Graphql para realizar consultas y mutaciones
 app.use(
