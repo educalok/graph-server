@@ -13,9 +13,11 @@ const register = {
   },
   async resolve(_, {username, email, password, displayName}) {
     const user = new User({username, email, password, displayName});
+    //Se llama a la función que encripta el password antes de ser guardado en la base de datos
     user.password = await bcrypt.encryptPassword(user.password);
     await user.save();
 
+    //Se codifican los datos del usuario creándose un token
     const token = auth.createJWTToken({
       _id: user._id,
       email: user.email,
