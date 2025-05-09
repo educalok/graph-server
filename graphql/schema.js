@@ -1,12 +1,12 @@
-const {GraphQLSchema, GraphQLObjectType} = require('graphql');
+const { GraphQLSchema, GraphQLObjectType } = require('graphql');
 
-// Consultas
-const {users, user, posts, post, comments, comment} = require('./queries');
+// Queries
+const { users, user, posts, post, comments, comment } = require('./queries');
 
-// Mutaciones
-const {register, login, createPost, addComment, updatePost, deletePost, updateComment, deleteComment} = require('./mutations');
+// Mutations
+const { register, login, createPost, addComment, updatePost, deletePost, updateComment, deleteComment } = require('./mutations');
 
-// Definición de todos los tipos de consultas
+// Definition of all query types
 const QueryType = new GraphQLObjectType({
   name: 'QueryType',
   description: 'Queries',
@@ -20,7 +20,7 @@ const QueryType = new GraphQLObjectType({
   },
 });
 
-// Definición de todos los tipos de mutaciones
+// Definition of all mutation types
 const MutationType = new GraphQLObjectType({
   name: 'MutationType',
   description: 'Mutations',

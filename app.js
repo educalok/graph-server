@@ -1,25 +1,35 @@
 const express = require('express');
-const {graphqlHTTP} = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql');
 const schema = require('./graphql/schema');
-const {authenticate} = require('./middleware/auth');
+const { authenticate } = require('./middleware/auth');
 
-//Se crea el servidor
 const app = express();
 
-//Se define el middleware para ejecutarse en todos los requests
+// Apply global authentication middleware
 app.use(authenticate);
 
-//Ruta opcional en el root del dominio que devuelve un mensaje
-app.get('/', (req, res) => res.json({msg: 'Welcome. Go to /graphql'}));
+// Root route with basic info
+app.get('/', (req, res) => {
+  res.json({ msg: 'Welcome. Go to /graphql' });
+});
 
-//Se monta el servidor graphqlHTTP en el endpoint /graphql. Se le asigna un schema y establece la
-//propiedad graphiql para visualizar la herramienta de consultas/mutaciones provista por Graph.
+// Ensure schema is defined before using it
+if (!schema) {
+  throw new Error('GraphQL schema is not defined');
+}
+
+// Mount GraphQL endpoint
 app.use(
   '/graphql',
   graphqlHTTP({
     schema,
-    graphiql: true,
-  }),
+    graphiql: process.env.NODE_ENV !== 'production',
+  })
 );
+
+// Global error handler
+app.use(( res) => {
+  res.status(500).json({ error: 'Internal server error' });
+});
 
 module.exports = app;

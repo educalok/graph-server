@@ -1,11 +1,11 @@
 const app = require('./app');
-const {connectDB} = require('./db');
-const {PORT} = require('./config');
+const { connectDB } = require('./db');
+const { PORT } = require('./config');
 
-//Se ejecuta el método de conexión a la base de datos
+// Executes the database connection method
 connectDB();
 
-//Se establece el número de puerto del servidor Express
+// Sets the port number for the Express server
 app.listen(PORT);
 
 console.log('Server on port', PORT);

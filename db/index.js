@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
-const {MONGODB_URI} = require('../config');
+const { MONGODB_URI } = require('../config');
 
-//Se define la conexión a la DB utilizando la librería Mongoose, la cual mapea una base de datos Mongo
 const connectDB = async () => {
   try {
+    console.log(MONGODB_URI);
     await mongoose.connect(MONGODB_URI);
-    console.log('Mongodb connected');
+    console.log('MongoDB connected successfully');
   } catch (error) {
-    console.error(error);
+    console.log(error.cause);
+    // If the connection fails, exit the process with an error code
+    process.exit(1);
   }
 };
 
-module.exports = {connectDB};
+module.exports = { connectDB };

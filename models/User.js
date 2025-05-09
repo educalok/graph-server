@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema(
   {
@@ -9,7 +9,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      select: false, //Propiedad seteada en False que este campo no sea mostrado en una acción de Select
+      select: false, // This field will not be returned in query results by default
     },
     email: {
       type: String,
@@ -23,8 +23,8 @@ const userSchema = new Schema(
     },
   },
   {
-    timestamps: true, //Propiedad que agrega dos columnas DateTime a la tabla automáticamente (createdAt y UpdatedAt)
-    versionKey: false,
+    timestamps: true, // Automatically adds createdAt and updatedAt fields
+    versionKey: false, // Disables the __v version field
   },
 );
 

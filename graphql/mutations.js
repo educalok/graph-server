@@ -1,23 +1,23 @@
-const {GraphQLString, GraphQLID, GraphQLNonNull} = require('graphql');
-const {User, Post, Comment} = require('../models');
-const {auth, bcrypt} = require('../util');
-const {PostType, CommentType} = require('./types');
+const { GraphQLString, GraphQLID, GraphQLNonNull } = require('graphql');
+const { User, Post, Comment } = require('../models');
+const { auth, bcrypt } = require('../util');
+const { PostType, CommentType } = require('./types');
 
 const register = {
   type: GraphQLString,
   args: {
-    username: {type: new GraphQLNonNull(GraphQLString)},
-    email: {type: new GraphQLNonNull(GraphQLString)},
-    password: {type: new GraphQLNonNull(GraphQLString)},
-    displayName: {type: new GraphQLNonNull(GraphQLString)},
+    username: { type: new GraphQLNonNull(GraphQLString) },
+    email: { type: new GraphQLNonNull(GraphQLString) },
+    password: { type: new GraphQLNonNull(GraphQLString) },
+    displayName: { type: new GraphQLNonNull(GraphQLString) },
   },
-  async resolve(_, {username, email, password, displayName}) {
-    const user = new User({username, email, password, displayName});
-    //Se llama a la función que encripta el password antes de ser guardado en la base de datos
+  async resolve(_, { username, email, password, displayName }) {
+    const user = new User({ username, email, password, displayName });
+    // Encrypt the password before saving it in the database
     user.password = await bcrypt.encryptPassword(user.password);
     await user.save();
 
-    //Se codifican los datos del usuario creándose un token
+    // Encode the user data into a token
     const token = auth.createJWTToken({
       _id: user._id,
       email: user.email,
@@ -30,11 +30,11 @@ const register = {
 const login = {
   type: GraphQLString,
   args: {
-    email: {type: new GraphQLNonNull(GraphQLString)},
-    password: {type: new GraphQLNonNull(GraphQLString)},
+    email: { type: new GraphQLNonNull(GraphQLString) },
+    password: { type: new GraphQLNonNull(GraphQLString) },
   },
-  async resolve(_, {email, password}) {
-    const user = await User.findOne({email}).select('+password');
+  async resolve(_, { email, password }) {
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) throw new Error('Invalid Username');
 
@@ -54,12 +54,12 @@ const login = {
 
 const createPost = {
   type: PostType,
-  description: 'create a new blog post',
+  description: 'Create a new blog post',
   args: {
-    title: {type: new GraphQLNonNull(GraphQLString)},
-    body: {type: new GraphQLNonNull(GraphQLString)},
+    title: { type: new GraphQLNonNull(GraphQLString) },
+    body: { type: new GraphQLNonNull(GraphQLString) },
   },
-  async resolve(_, args, {verifiedUser}) {
+  async resolve(_, args, { verifiedUser }) {
     if (!verifiedUser) throw new Error('You must be logged in to do that');
 
     const userFound = await User.findById(verifiedUser._id);
@@ -77,25 +77,25 @@ const createPost = {
 
 const updatePost = {
   type: PostType,
-  description: 'update a blog post',
+  description: 'Update a blog post',
   args: {
-    id: {type: new GraphQLNonNull(GraphQLID)},
-    title: {type: new GraphQLNonNull(GraphQLString)},
-    body: {type: new GraphQLNonNull(GraphQLString)},
+    id: { type: new GraphQLNonNull(GraphQLID) },
+    title: { type: new GraphQLNonNull(GraphQLString) },
+    body: { type: new GraphQLNonNull(GraphQLString) },
   },
-  async resolve(_, {id, title, body}, {verifiedUser}) {
+  async resolve(_, { id, title, body }, { verifiedUser }) {
     if (!verifiedUser) throw new Error('Unauthorized');
 
     const postUpdated = await Post.findOneAndUpdate(
-      {_id: id, authorId: verifiedUser._id},
-      {title, body},
+      { _id: id, authorId: verifiedUser._id },
+      { title, body },
       {
-        new: true, //Esta propiedad se defne para que el select muestre el post actualizado en vez del viejo
+        new: true, // This option ensures that the updated post is returned instead of the old one
         runValidators: true,
-      },
+      }
     );
 
-    if (!postUpdated) throw new Error('No post for given id');
+    if (!postUpdated) throw new Error('No post for given ID');
 
     return postUpdated;
   },
@@ -103,16 +103,16 @@ const updatePost = {
 
 const deletePost = {
   type: GraphQLString,
-  description: 'Delete post',
+  description: 'Delete a post',
   args: {
-    postId: {type: new GraphQLNonNull(GraphQLID)},
+    postId: { type: new GraphQLNonNull(GraphQLID) },
   },
-  async resolve(_, args, {verifiedUser}) {
+  async resolve(_, args, { verifiedUser }) {
     const postDeleted = await Post.findOneAndDelete({
       _id: args.postId,
       authorId: verifiedUser._id,
     });
-    if (!postDeleted) throw new Error('No post with given ID Found for the author');
+    if (!postDeleted) throw new Error('No post with given ID found for the author');
 
     return 'Post deleted';
   },
@@ -122,10 +122,10 @@ const addComment = {
   type: CommentType,
   description: 'Create a new comment for a blog post',
   args: {
-    comment: {type: new GraphQLNonNull(GraphQLString)},
-    postId: {type: new GraphQLNonNull(GraphQLID)},
+    comment: { type: new GraphQLNonNull(GraphQLString) },
+    postId: { type: new GraphQLNonNull(GraphQLID) },
   },
-  resolve(_, {postId, comment}, {verifiedUser}) {
+  resolve(_, { postId, comment }, { verifiedUser }) {
     const newComment = new Comment({
       userId: verifiedUser._id,
       postId,
@@ -137,13 +137,13 @@ const addComment = {
 
 const updateComment = {
   type: CommentType,
-  description: 'update a comment',
+  description: 'Update a comment',
   args: {
-    id: {type: new GraphQLNonNull(GraphQLID)},
-    comment: {type: new GraphQLNonNull(GraphQLString)},
+    id: { type: new GraphQLNonNull(GraphQLID) },
+    comment: { type: new GraphQLNonNull(GraphQLString) },
   },
-  async resolve(_, {id, comment}, {verifiedUser}) {
-    if (!verifiedUser) throw new Error('UnAuthorized');
+  async resolve(_, { id, comment }, { verifiedUser }) {
+    if (!verifiedUser) throw new Error('Unauthorized');
 
     const commentUpdated = await Comment.findOneAndUpdate(
       {
@@ -156,7 +156,7 @@ const updateComment = {
       {
         new: true,
         runValidators: true,
-      },
+      }
     );
 
     if (!commentUpdated) throw new Error('No comment with the given ID');
@@ -167,11 +167,11 @@ const updateComment = {
 
 const deleteComment = {
   type: GraphQLString,
-  description: 'delete a comment',
+  description: 'Delete a comment',
   args: {
-    id: {type: new GraphQLNonNull(GraphQLID)},
+    id: { type: new GraphQLNonNull(GraphQLID) },
   },
-  async resolve(_, {id}, {verifiedUser}) {
+  async resolve(_, { id }, { verifiedUser }) {
     if (!verifiedUser) throw new Error('Unauthorized');
 
     const commentDelete = await Comment.findOneAndDelete({

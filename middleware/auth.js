@@ -1,21 +1,22 @@
 const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require('../config');
+const { JWT_SECRET } = require('../config');
 
 const authenticate = (req, res, next) => {
-  //Se extae el token del encabezado de la petición (Con el formato 'Bearer token', por lo cual se realiza un split dejando sólo el segundo campo).
+  // Extract the token from the request header (with the format 'Bearer token', so a split is done to keep only the second part).
   const token = req.headers.authorization?.split(' ')[1] || '';
+
   try {
-    //Verificación del token, la cual debe utilizar la validación con la firma de la palabra secreta. Si no es válida, resulta en error y cae en el Catch.
+    // Token verification, which must use validation with the secret word signature. If invalid, it results in an error and falls into the catch block.
     const verified = jwt.verify(token, JWT_SECRET);
-    //Si la decodificación es correcta, se toman los datos del usuario y se guardan en el objeto request para ser usados en las mutaciones/queries
+    // If the decoding is successful, the user data is taken and saved in the request object to be used in mutations/queries.
     req.verifiedUser = verified.user;
     next();
-  } catch (error) {
-    // console.error("error:", error);
-    next();
+  } catch  {
+    // If token verification fails, respond with an unauthorized error
+    res.status(401).json({ message: 'Unauthorized' });
   }
 };
-//En caso de la codificación exitosa o no, se llama al callback next para continuar con la ejecución del request.
+// Whether the encoding is successful or not, the next callback is called to continue with the request execution.
 
 module.exports = {
   authenticate,

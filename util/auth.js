@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
-const {JWT_EXPIRES_IN, JWT_SECRET} = require('../config');
+const { JWT_SECRET } = require('../config');
 
-//Utilizando la librería jsonwebtoken se crea la codificación del token con la información
-//de las propiedades de un usuario. Se establece una palabra secreta y se le indica
-//el tiempo de vida del token (1 día).
+//Creates a JWT token using the user's properties.
+//Sets a secret key and the token's expiration time (1 day).
 const createJWTToken = (user) => {
-  return jwt.sign({user}, JWT_SECRET, {
+  return jwt.sign({ user }, JWT_SECRET, {
     expiresIn: '1d',
   });
 };

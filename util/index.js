@@ -1,4 +1,4 @@
 module.exports = {
-  bcrypt: require('./bcrypt'),
+  bcrypt: require('./password'),
   auth: require('./auth'),
 };

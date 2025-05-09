@@ -1,6 +1,6 @@
-const {GraphQLList, GraphQLID, GraphQLNonNull} = require('graphql');
-const {UserType, PostType, CommentType} = require('./types');
-const {User, Post, Comment} = require('../models');
+const { GraphQLList, GraphQLID, GraphQLNonNull } = require('graphql');
+const { UserType, PostType, CommentType } = require('./types');
+const { User, Post, Comment } = require('../models');
 
 const users = {
   type: new GraphQLList(UserType),
@@ -10,29 +10,29 @@ const users = {
 
 const user = {
   type: UserType,
-  description: 'retrieves a single user',
+  description: 'Retrieves a single user',
   args: {
-    id: {type: new GraphQLNonNull(GraphQLID)},
+    id: { type: new GraphQLNonNull(GraphQLID) },
   },
-  resolve: (_, {id}) => User.findById(id),
+  resolve: (_, { id }) => User.findById(id),
 };
 
 const posts = {
   type: new GraphQLList(PostType),
-  description: 'retrieves a list of posts',
+  description: 'Retrieves a list of posts',
   resolve: () => Post.find(),
 };
 
 const post = {
   type: PostType,
-  description: 'retrieves a single post',
-  args: {id: {type: GraphQLID}},
-  resolve: (_, {id}) => Post.findById(id),
+  description: 'Retrieves a single post',
+  args: { id: { type: GraphQLID } },
+  resolve: (_, { id }) => Post.findById(id),
 };
 
 const comments = {
   type: new GraphQLList(CommentType),
-  description: 'Retrieves list of commnets',
+  description: 'Retrieves a list of comments',
   resolve: () => Comment.find(),
 };
 
@@ -40,9 +40,9 @@ const comment = {
   type: CommentType,
   description: 'Retrieves a single comment',
   args: {
-    id: {type: new GraphQLNonNull(GraphQLID)},
+    id: { type: new GraphQLNonNull(GraphQLID) },
   },
-  resolve: (_, {id}) => Comment.findById(id),
+  resolve: (_, { id }) => Comment.findById(id),
 };
 
-module.exports = {users, user, posts, post, comments, comment};
+module.exports = { users, user, posts, post, comments, comment };
